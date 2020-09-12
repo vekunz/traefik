@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/containous/traefik/v2/pkg/provider"
 	stdlog "log"
 	"net/http"
 	"os"
@@ -110,7 +111,7 @@ func runCmd(staticConfiguration *static.Configuration) error {
 
 	stats(staticConfiguration)
 
-	svr, err := setupServer(staticConfiguration)
+	svr, err := SetupServer(staticConfiguration)
 	if err != nil {
 		return err
 	}
@@ -160,8 +161,16 @@ func runCmd(staticConfiguration *static.Configuration) error {
 	return nil
 }
 
-func setupServer(staticConfiguration *static.Configuration) (*server.Server, error) {
+func SetupServer(staticConfiguration *static.Configuration, additionalProviders ...provider.Provider) (*server.Server, error) {
 	providerAggregator := aggregator.NewProviderAggregator(*staticConfiguration.Providers)
+
+	// adds additional providers
+	for _, additionalProvider := range additionalProviders {
+		err := providerAggregator.AddProvider(additionalProvider)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	// adds internal provider
 	err := providerAggregator.AddProvider(traefik.New(*staticConfiguration))
