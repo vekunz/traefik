@@ -1,3 +1,8 @@
+==========================
+
+**Disclaimer**: This fork contains an additional branch named "dg-patch". This branch contains some patches that allows traefik to be used as a module inside another go project. Look out for tags with a "-patch" prefix.
+
+==========================
 
 <p align="center">
 <img src="docs/content/assets/img/traefik.logo.png" alt="Traefik" title="Traefik" />
